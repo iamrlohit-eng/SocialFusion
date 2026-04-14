@@ -1,0 +1,2525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialFusion - Premium Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .dark-mode {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: #ffffff;
+        }
+
+        .light-mode {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #000000;
+        }
+
+        .post-card {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #eff3f4;
+        }
+
+        .dark-mode .post-card {
+            border-bottom-color: #1f2937;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 24px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-primary:disabled {
+            background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .modal-content {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        }
+
+        .animation-fadeIn {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hashtag {
+            color: #1d9bf0;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .hashtag:hover {
+            text-decoration: underline;
+        }
+
+        .mention {
+            color: #1d9bf0;
+            cursor: pointer;
+        }
+
+        .mention:hover {
+            text-decoration: underline;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #657786;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .dark-mode .icon-btn {
+            color: #6b7280;
+        }
+
+        .icon-btn:hover {
+            color: #1d9bf0;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e0245e;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .dark-mode .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+
+        .user-card {
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .user-card:hover {
+            background-color: #f7f9fa;
+        }
+
+        .dark-mode .user-card:hover {
+            background-color: #1f2937;
+        }
+
+        .file-input-hidden {
+            display: none;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            margin-top: 12px;
+        }
+
+        .story-ring {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            padding: 3px;
+            border-radius: 50%;
+        }
+
+        .story-ring-unviewed {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .profile-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .settings-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dark-mode .settings-card {
+            background: rgba(45, 55, 72, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div id="app"></div>
+
+    <script>
+        // ===========================
+        // UTILITY FUNCTIONS
+        // ===========================
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function formatTime(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (seconds < 60) return 'now';
+            if (minutes < 60) return `${minutes}m`;
+            if (hours < 24) return `${hours}h`;
+            if (days < 7) return `${days}d`;
+            
+            return new Date(timestamp).toLocaleDateString();
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function extractHashtags(text) {
+            const matches = text.match(/#\w+/g) || [];
+            return [...new Set(matches)].map(tag => tag.substring(1).toLowerCase());
+        }
+
+        function highlightHashtags(text) {
+            return text.replace(/#\w+/g, '<span class="hashtag">$&</span>')
+                       .replace(/@\w+/g, '<span class="mention">$&</span>');
+        }
+
+        // ===========================
+        // STATE MANAGEMENT
+        // ===========================
+
+        const state = {
+            currentUser: null,
+            users: [],
+            posts: [],
+            stories: [], // New: Stories feature
+            darkMode: localStorage.getItem('darkMode') === 'true',
+            selectedHashtag: null,
+            filter: 'all',
+            notifications: [],
+            messages: [],
+            currentView: 'home', // home, profile, messages, notifications, stories, settings
+            selectedProfile: null,
+            showPostModal: false,
+            showProfileModal: false,
+            showDMModal: false,
+            showStoryModal: false, // New: Story modal
+            showSettingsModal: false, // New: Settings modal
+            showPollModal: false, // New: Poll creation modal
+            showLiveModal: false, // New: Live streaming modal
+            selectedDMUser: null,
+            searchQuery: '',
+            searchResults: [],
+            viewingStory: null, // New: Currently viewing story
+            storyIndex: 0, // New: Current story in sequence
+            storyReplies: [] // New: Story replies
+        };
+
+        // ===========================
+        // LOCAL STORAGE
+        // ===========================
+
+        function saveState() {
+            const stateToSave = {
+                users: state.users,
+                posts: state.posts,
+                messages: state.messages,
+                stories: state.stories, // New: Save stories
+                storyReplies: state.storyReplies, // New: Save story replies
+                darkMode: state.darkMode
+            };
+            localStorage.setItem('socialfusion_state', JSON.stringify(stateToSave));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('socialfusion_state');
+            if (saved) {
+                const data = JSON.parse(saved);
+                state.users = data.users || [];
+                state.posts = data.posts || [];
+                state.messages = data.messages || [];
+                state.stories = data.stories || []; // New: Load stories
+                state.storyReplies = data.storyReplies || []; // New: Load story replies
+                state.darkMode = data.darkMode !== false;
+            }
+
+            const currentUserEmail = localStorage.getItem('currentUser');
+            if (currentUserEmail) {
+                state.currentUser = state.users.find(u => u.email === currentUserEmail);
+            }
+        }
+
+        // ===========================
+        // USER MANAGEMENT
+        // ===========================
+
+        function register(username, email, password) {
+            if (state.users.find(u => u.email === email)) {
+                return { success: false, error: 'Email already registered' };
+            }
+
+            const existingUsername = state.users.find(u => u.username.toLowerCase() === username.toLowerCase());
+            if (existingUsername) {
+                return { success: false, error: 'Username already taken' };
+            }
+
+            const user = {
+                id: generateId(),
+                username,
+                email,
+                password,
+                avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`,
+                banner: `https://images.unsplash.com/photo-1579546929662-711aa33e6b14?w=1500&h=300&fit=crop`,
+                bio: 'New to SocialFusion',
+                followers: [],
+                following: [],
+                verified: false,
+                privateAccount: false,
+                createdAt: Date.now()
+            };
+
+            state.users.push(user);
+            saveState();
+            return { success: true, user };
+        }
+
+        function login(email, password) {
+            const user = state.users.find(u => u.email === email && u.password === password);
+            if (user) {
+                state.currentUser = user;
+                localStorage.setItem('currentUser', email);
+                saveState();
+                return { success: true, user };
+            }
+            return { success: false, error: 'Invalid email or password' };
+        }
+
+        function logout() {
+            state.currentUser = null;
+            localStorage.removeItem('currentUser');
+            saveState();
+        }
+
+        function followUser(userId) {
+            if (!state.currentUser) return;
+            const user = state.users.find(u => u.id === userId);
+            if (!user) return;
+
+            const isFollowing = state.currentUser.following.includes(userId);
+            if (isFollowing) {
+                state.currentUser.following = state.currentUser.following.filter(id => id !== userId);
+                user.followers = user.followers.filter(id => id !== state.currentUser.id);
+            } else {
+                state.currentUser.following.push(userId);
+                user.followers.push(state.currentUser.id);
+                addNotification(userId, 'follow', state.currentUser);
+            }
+            saveState();
+        }
+
+        function updateUserProfile(bio) {
+            if (!state.currentUser) return;
+            state.currentUser.bio = bio;
+            saveState();
+        }
+
+        function canViewStory(story) {
+            if (!story) return false;
+            const author = state.users.find(u => u.id === story.author.id);
+            if (!author) return false;
+            if (author.id === state.currentUser.id) return true;
+            if (!author.privateAccount) return true;
+            return author.followers.includes(state.currentUser.id);
+        }
+
+        // ===========================
+        // POST MANAGEMENT
+        // ===========================
+
+        function createPost(content, type = 'text', media = null, mediaType = null) {
+            if (!state.currentUser) return null;
+
+            const hashtags = extractHashtags(content);
+            const post = {
+                id: generateId(),
+                author: { ...state.currentUser },
+                content,
+                type,
+                media, // Changed from image to media to support both images and videos
+                mediaType, // 'image' or 'video'
+                hashtags,
+                likes: [],
+                reactions: [], // New: Emoji reactions
+                reposts: [],
+                bookmarks: [],
+                comments: [],
+                createdAt: Date.now(),
+                scheduledFor: null, // New: Post scheduling
+                isLive: false, // New: Live streaming
+                poll: null // New: Polls
+            };
+
+            state.posts.unshift(post);
+            saveState();
+            return post;
+        }
+
+        function deletePost(postId) {
+            state.posts = state.posts.filter(p => p.id !== postId);
+            saveState();
+        }
+
+        function editPost(postId, newContent) {
+            const post = state.posts.find(p => p.id === postId);
+            if (post) {
+                post.content = newContent;
+                post.hashtags = extractHashtags(newContent);
+                saveState();
+            }
+        }
+
+        function likePost(postId) {
+            if (!state.currentUser) return;
+            const post = state.posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const likeIndex = post.likes.findIndex(id => id === state.currentUser.id);
+            if (likeIndex > -1) {
+                post.likes.splice(likeIndex, 1);
+            } else {
+                post.likes.push(state.currentUser.id);
+                if (post.author.id !== state.currentUser.id) {
+                    addNotification(post.author.id, 'like', state.currentUser, post);
+                }
+            }
+            saveState();
+        }
+
+        function repostPost(postId) {
+            if (!state.currentUser) return;
+            const post = state.posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const repostIndex = post.reposts.findIndex(id => id === state.currentUser.id);
+            if (repostIndex > -1) {
+                post.reposts.splice(repostIndex, 1);
+            } else {
+                post.reposts.push(state.currentUser.id);
+                if (post.author.id !== state.currentUser.id) {
+                    addNotification(post.author.id, 'repost', state.currentUser, post);
+                }
+            }
+            saveState();
+        }
+
+        function bookmarkPost(postId) {
+            if (!state.currentUser) return;
+            const post = state.posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const bookmarkIndex = post.bookmarks.findIndex(id => id === state.currentUser.id);
+            if (bookmarkIndex > -1) {
+                post.bookmarks.splice(bookmarkIndex, 1);
+            } else {
+                post.bookmarks.push(state.currentUser.id);
+            }
+            saveState();
+        }
+
+        function addComment(postId, commentText) {
+            if (!state.currentUser) return;
+            const post = state.posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const comment = {
+                id: generateId(),
+                author: { ...state.currentUser },
+                content: commentText,
+                createdAt: Date.now(),
+                likes: []
+            };
+
+            post.comments.push(comment);
+            if (post.author.id !== state.currentUser.id) {
+                addNotification(post.author.id, 'comment', state.currentUser, post);
+            }
+            saveState();
+        }
+
+        function deleteComment(postId, commentId) {
+            const post = state.posts.find(p => p.id === postId);
+            if (post) {
+                post.comments = post.comments.filter(c => c.id !== commentId);
+                saveState();
+            }
+        }
+
+        function getFilteredPosts() {
+            let filtered = state.posts.filter(p => {
+                if (!p.scheduledFor) return true;
+                if (p.scheduledFor <= Date.now()) return true;
+                return state.currentUser && p.author.id === state.currentUser.id;
+            });
+
+            if (state.selectedHashtag) {
+                filtered = filtered.filter(p => 
+                    p.hashtags.includes(state.selectedHashtag.toLowerCase())
+                );
+            }
+
+            if (state.filter !== 'all') {
+                filtered = filtered.filter(p => p.type === state.filter);
+            }
+
+            return filtered;
+        }
+
+        // ===========================
+        // NEW FEATURES
+        // ===========================
+
+        function addReaction(postId, emoji) {
+            if (!state.currentUser) return;
+            const post = state.posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const existingReaction = post.reactions.find(r => r.userId === state.currentUser.id && r.emoji === emoji);
+            if (existingReaction) {
+                // Remove reaction if already exists
+                post.reactions = post.reactions.filter(r => !(r.userId === state.currentUser.id && r.emoji === emoji));
+            } else {
+                // Remove any existing reaction from this user
+                post.reactions = post.reactions.filter(r => r.userId !== state.currentUser.id);
+                // Add new reaction
+                post.reactions.push({
+                    userId: state.currentUser.id,
+                    emoji: emoji,
+                    createdAt: Date.now()
+                });
+            }
+            saveState();
+            render();
+        }
+
+        function createPoll(question, options, duration = 24) {
+            return {
+                id: generateId(),
+                question,
+                options: options.map(option => ({ text: option, votes: [] })),
+                createdAt: Date.now(),
+                expiresAt: Date.now() + (duration * 60 * 60 * 1000), // hours to milliseconds
+                totalVotes: 0
+            };
+        }
+
+        function votePoll(postId, optionIndex) {
+            if (!state.currentUser) return;
+            const post = state.posts.find(p => p.id === postId);
+            if (!post || !post.poll) return;
+
+            const option = post.poll.options[optionIndex];
+            const existingVote = option.votes.find(vote => vote.userId === state.currentUser.id);
+
+            if (!existingVote) {
+                option.votes.push({ userId: state.currentUser.id, createdAt: Date.now() });
+                post.poll.totalVotes++;
+                saveState();
+                render();
+            }
+        }
+
+        function voteStoryPoll(storyId, optionIndex) {
+            if (!state.currentUser) return;
+            const story = state.stories.find(s => s.id === storyId);
+            if (!story || !story.poll) return;
+
+            const option = story.poll.options[optionIndex];
+            const existingVote = option.votes.find(vote => vote.userId === state.currentUser.id);
+
+            if (!existingVote) {
+                option.votes.push({ userId: state.currentUser.id, createdAt: Date.now() });
+                story.poll.totalVotes++;
+                saveState();
+                render();
+            }
+        }
+
+        function startLiveStream(title) {
+            const livePost = {
+                id: generateId(),
+                author: { ...state.currentUser },
+                content: `🔴 LIVE: ${title}`,
+                type: 'live',
+                media: null,
+                mediaType: null,
+                hashtags: [],
+                likes: [],
+                reactions: [],
+                reposts: [],
+                bookmarks: [],
+                comments: [],
+                createdAt: Date.now(),
+                isLive: true,
+                viewers: [],
+                streamId: generateId()
+            };
+
+            state.posts.unshift(livePost);
+            saveState();
+            return livePost;
+        }
+
+        function endLiveStream(postId) {
+            const post = state.posts.find(p => p.id === postId);
+            if (post && post.isLive) {
+                post.isLive = false;
+                post.content = post.content.replace('🔴 LIVE:', '📺 Stream ended:');
+                saveState();
+                render();
+            }
+        }
+
+        function schedulePost(content, media, mediaType, scheduledTime) {
+            const scheduledPost = {
+                id: generateId(),
+                author: { ...state.currentUser },
+                content,
+                type: media ? 'media' : 'text',
+                media,
+                mediaType,
+                hashtags: extractHashtags(content),
+                likes: [],
+                reactions: [],
+                reposts: [],
+                bookmarks: [],
+                comments: [],
+                createdAt: Date.now(),
+                scheduledFor: scheduledTime,
+                isScheduled: true
+            };
+
+            state.posts.push(scheduledPost); // Add to end for scheduling
+            saveState();
+            return scheduledPost;
+        }
+
+        // ===========================
+        // STORIES
+        // ===========================
+
+        function createStory(content, media = null, type = 'text', poll = null) {
+            if (!state.currentUser) return null;
+
+            const story = {
+                id: generateId(),
+                author: { ...state.currentUser },
+                content,
+                media, // Changed from image to media to support both images and videos
+                type, // 'text', 'photo', 'video'
+                createdAt: Date.now(),
+                expiresAt: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
+                views: [],
+                likes: [],
+                replies: [], // New: Array of reply objects
+                poll
+            };
+
+            state.stories.unshift(story);
+            saveState();
+            return story;
+        }
+
+        function likeStory(storyId) {
+            if (!state.currentUser) return;
+            const story = state.stories.find(s => s.id === storyId);
+            if (!story) return;
+
+            const likeIndex = story.likes.findIndex(id => id === state.currentUser.id);
+            if (likeIndex > -1) {
+                story.likes.splice(likeIndex, 1);
+            } else {
+                story.likes.push(state.currentUser.id);
+            }
+            saveState();
+        }
+
+        function replyStory(storyId, replyText) {
+            if (!state.currentUser || !replyText.trim()) return;
+
+            const story = state.stories.find(s => s.id === storyId);
+            if (!story) return;
+
+            const reply = {
+                id: generateId(),
+                author: { ...state.currentUser },
+                content: replyText.trim(),
+                createdAt: Date.now()
+            };
+
+            story.replies.push(reply);
+            saveState();
+            return reply;
+        }
+
+        function deleteStory(storyId) {
+            state.stories = state.stories.filter(s => s.id !== storyId);
+            saveState();
+        }
+
+        function getActiveStories() {
+            const now = Date.now();
+            return state.stories.filter(s => s.expiresAt > now);
+        }
+
+        function getUserStories(userId) {
+            return state.stories.filter(s => s.author.id === userId && s.expiresAt > Date.now() && canViewStory(s));
+        }
+
+        function getStoriesByUsers() {
+            const activeStories = getActiveStories().filter(story => canViewStory(story));
+            const userStories = {};
+
+            activeStories.forEach(story => {
+                const userId = story.author.id;
+                if (!userStories[userId]) {
+                    userStories[userId] = {
+                        user: story.author,
+                        stories: [],
+                        hasUnviewed: false
+                    };
+                }
+                userStories[userId].stories.push(story);
+
+                // Check if current user has viewed all stories
+                const allViewed = userStories[userId].stories.every(s => 
+                    s.views.includes(state.currentUser.id)
+                );
+                userStories[userId].hasUnviewed = !allViewed;
+            });
+
+            return Object.values(userStories);
+        }
+
+        // ===========================
+        // NOTIFICATIONS
+        // ===========================
+
+        function addNotification(recipientId, type, actor, post = null) {
+            const recipient = state.users.find(u => u.id === recipientId);
+            if (!recipient) return;
+
+            const notif = {
+                id: generateId(),
+                recipientId,
+                type, // like, comment, follow, repost, message
+                actor: { ...actor },
+                post,
+                createdAt: Date.now(),
+                read: false
+            };
+
+            state.notifications.push(notif);
+            saveState();
+        }
+
+        function getNotifications() {
+            if (!state.currentUser) return [];
+            return state.notifications.filter(n => n.recipientId === state.currentUser.id).reverse();
+        }
+
+        // ===========================
+        // SEARCH
+        // ===========================
+
+        function search(query) {
+            if (!query.trim()) {
+                state.searchResults = [];
+                return;
+            }
+
+            const q = query.toLowerCase();
+            state.searchResults = state.users.filter(u => 
+                (u.username.toLowerCase().includes(q) || 
+                 u.email.toLowerCase().includes(q)) &&
+                u.id !== state.currentUser.id
+            ).slice(0, 5);
+        }
+
+        // ===========================
+        // UI COMPONENTS
+        // ===========================
+
+        function LoginScreen() {
+            return `
+                <div class="flex items-center justify-center min-h-screen">
+                    <div class="w-full max-w-md">
+                        <div class="text-center mb-8">
+                            <h1 class="text-4xl font-bold" style="color: #1d9bf0; margin-bottom: 8px;">
+                                𝕯
+                            </h1>
+                            <h2 class="text-2xl font-bold mb-2">SocialFusion</h2>
+                            <p class="text-gray-500">Premium Edition</p>
+                        </div>
+
+                        <div id="login-form" class="bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl mb-6">
+                            <h3 class="text-xl font-bold mb-6">Sign In</h3>
+                            <input 
+                                id="login-email" 
+                                type="email" 
+                                placeholder="Email" 
+                                class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:outline-none focus:border-blue-500"
+                            />
+                            <input 
+                                id="login-password" 
+                                type="password" 
+                                placeholder="Password" 
+                                class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:outline-none focus:border-blue-500"
+                            />
+                            <button onclick="handleLogin()" class="btn-primary w-full mb-4">
+                                Sign In
+                            </button>
+                            <button onclick="showRegisterForm()" class="w-full p-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-bold text-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700">
+                                Create Account
+                            </button>
+                            <div id="login-error" class="text-red-500 text-sm mt-4"></div>
+                        </div>
+
+                        <div id="register-form" style="display: none;" class="bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl">
+                            <h3 class="text-xl font-bold mb-6">Create Account</h3>
+                            <input 
+                                id="register-username" 
+                                type="text" 
+                                placeholder="Username" 
+                                class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:outline-none focus:border-blue-500"
+                            />
+                            <input 
+                                id="register-email" 
+                                type="email" 
+                                placeholder="Email" 
+                                class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:outline-none focus:border-blue-500"
+                            />
+                            <input 
+                                id="register-password" 
+                                type="password" 
+                                placeholder="Password" 
+                                class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 rounded-lg focus:outline-none focus:border-blue-500"
+                            />
+                            <button onclick="handleRegister()" class="btn-primary w-full mb-4">
+                                Sign Up
+                            </button>
+                            <button onclick="showLoginForm()" class="w-full p-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-bold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                Back to Sign In
+                            </button>
+                            <div id="register-error" class="text-red-500 text-sm mt-4"></div>
+                        </div>
+
+                        <div class="text-center text-sm text-gray-500 mt-8">
+                            <p>Demo Accounts Available:</p>
+                            <p style="font-size: 12px; margin: 4px 0;">demo@example.com / password123</p>
+                            <p style="font-size: 12px; margin: 4px 0;">john@example.com / password123</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function MainApp() {
+            const notifications = getNotifications();
+            const unreadCount = notifications.filter(n => !n.read).length;
+
+            return `
+                <div class="flex h-screen">
+                    <!-- Left Sidebar -->
+                    <div class="w-64 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto hidden md:block">
+                        <div class="text-2xl font-bold mb-8" style="color: #1d9bf0;">𝕯</div>
+                        
+                        <nav class="space-y-4 mb-8">
+                            <div onclick="setView('home')" class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${state.currentView === 'home' ? 'bg-blue-100' : ''}">
+                                <span class="text-xl">🏠 Home</span>
+                            </div>
+                            <div onclick="setView('stories')" class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${state.currentView === 'stories' ? 'bg-blue-100' : ''}">
+                                <span class="text-xl">📖 Stories</span>
+                            </div>
+                            <div onclick="setView('messages')" class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${state.currentView === 'messages' ? 'bg-blue-100' : ''} relative">
+                                <span class="text-xl">💬 Messages</span>
+                                ${unreadCount > 0 ? `<div class="notification-badge">${unreadCount}</div>` : ''}
+                            </div>
+                            <div onclick="setView('notifications')" class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${state.currentView === 'notifications' ? 'bg-blue-100' : ''} relative">
+                                <span class="text-xl">🔔 Notifications</span>
+                                ${unreadCount > 0 ? `<div class="notification-badge">${unreadCount}</div>` : ''}
+                            </div>
+                            <div onclick="setView('profile')" class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${state.currentView === 'profile' ? 'bg-blue-100' : ''}">
+                                <span class="text-xl">👤 Profile</span>
+                            </div>
+                            <div onclick="setView('settings')" class="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer ${state.currentView === 'settings' ? 'bg-blue-100' : ''}">
+                                <span class="text-xl">⚙️ Settings</span>
+                            </div>
+                        </nav>
+
+                        <button onclick="showPostModal(true)" class="btn-primary w-full mb-8 py-3 text-lg">
+                            📝 Post
+                        </button>
+
+                        <!-- User Profile Card -->
+                        <div class="p-4 rounded-2xl border border-gray-200 dark:border-gray-700">
+                            <div onclick="setView('profile')" style="cursor: pointer;">
+                                <img src="${state.currentUser.avatar}" alt="avatar" class="w-12 h-12 rounded-full mb-2">
+                                <div class="font-bold">${state.currentUser.username}</div>
+                                <div class="text-gray-500 text-sm">@${state.currentUser.email.split('@')[0]}</div>
+                            </div>
+                            <div class="flex gap-4 mt-3 text-sm">
+                                <div><span class="font-bold">${state.currentUser.following.length}</span> Following</div>
+                                <div><span class="font-bold">${state.currentUser.followers.length}</span> Followers</div>
+                            </div>
+                            <div class="flex gap-2 mt-4">
+                                <button onclick="toggleDarkMode()" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-bold hover:bg-gray-100 dark:hover:bg-gray-800">
+                                    ${state.darkMode ? '☀️' : '🌙'}
+                                </button>
+                                <button onclick="handleLogout()" class="flex-1 p-2 rounded-lg border border-red-300 text-red-500 text-sm font-bold hover:bg-red-50 dark:hover:bg-red-900">
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="flex-1 border-r border-gray-200 dark:border-gray-700 overflow-y-auto scrollbar-thin">
+                        ${state.currentView === 'home' ? getFeedView() : ''}
+                        ${state.currentView === 'stories' ? getStoriesView() : ''}
+                        ${state.currentView === 'profile' ? getProfileView() : ''}
+                        ${state.currentView === 'messages' ? getMessagesView() : ''}
+                        ${state.currentView === 'notifications' ? getNotificationsView() : ''}
+                        ${state.currentView === 'settings' ? getSettingsView() : ''}
+                    </div>
+
+                    <!-- Right Sidebar - Trending & Search -->
+                    <div class="w-80 p-4 overflow-y-auto scrollbar-thin hidden lg:block">
+                        <div class="mb-4">
+                            <input 
+                                id="search-input"
+                                type="text" 
+                                placeholder="Search users..." 
+                                onkeyup="handleSearch(this.value)"
+                                class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
+                        <!-- Search Results -->
+                        <div id="search-results" style="display: none;" class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-4 mb-4">
+                            <h3 class="text-lg font-bold mb-4">Search Results</h3>
+                            ${state.searchResults.map(user => `
+                                <div class="user-card flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3 flex-1" onclick="viewUserProfile('${user.id}')">
+                                        <img src="${user.avatar}" alt="avatar" class="w-10 h-10 rounded-full">
+                                        <div>
+                                            <div class="font-bold text-sm">${user.username}</div>
+                                            <div class="text-gray-500 text-xs">@${user.email.split('@')[0]}</div>
+                                        </div>
+                                    </div>
+                                    <button onclick="handleFollowClick('${user.id}')" class="btn-primary text-sm px-4 py-1">
+                                        ${state.currentUser.following.includes(user.id) ? 'Following' : 'Follow'}
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Trending Topics -->
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl p-4">
+                            <h3 class="text-xl font-bold mb-4">What's Trending</h3>
+                            ${getTrendingTopics().map(topic => `
+                                <div class="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg cursor-pointer mb-2" onclick="setHashtag('${topic.tag}')">
+                                    <div class="text-sm text-gray-500">Trending</div>
+                                    <div class="font-bold">#${topic.tag}</div>
+                                    <div class="text-sm text-gray-500">${topic.count} posts</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modals -->
+                ${PostModal()}
+                ${ProfileModal()}
+                ${DMModal()}
+                ${StoryModal()}
+                ${StoryViewerModal()}
+                ${PollModal()}
+                ${LiveModal()}
+            `;
+        }
+
+        function getFeedView() {
+            const filteredPosts = getFilteredPosts();
+            return `
+                <div class="max-w-2xl">
+                    <!-- Feed Header -->
+                    <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 backdrop-blur bg-opacity-80">
+                        <h2 class="text-xl font-bold">Home</h2>
+                        <div class="flex gap-2 mt-3 flex-wrap">
+                            <button onclick="setFilter('all')" class="px-4 py-2 rounded-full ${state.filter === 'all' ? 'bg-blue-100 text-blue-500 font-bold' : 'bg-gray-100 dark:bg-gray-800'} text-sm font-bold">
+                                All
+                            </button>
+                            <button onclick="setFilter('text')" class="px-4 py-2 rounded-full ${state.filter === 'text' ? 'bg-blue-100 text-blue-500 font-bold' : 'bg-gray-100 dark:bg-gray-800'} text-sm font-bold">
+                                📝
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Composer -->
+                    ${ComposerComponent()}
+
+                    <!-- Posts -->
+                    <div id="posts-container">
+                        ${filteredPosts.length > 0 ? 
+                            filteredPosts.map(post => PostComponent(post)).join('') :
+                            '<div class="p-8 text-center text-gray-500"><div class="text-3xl mb-3">📭</div><p>No posts yet</p></div>'
+                        }
+                    </div>
+                </div>
+            `;
+        }
+
+        function getProfileView() {
+            const profile = state.selectedProfile ? state.users.find(u => u.id === state.selectedProfile) : state.currentUser;
+            if (!profile) return '';
+
+            const userPosts = state.posts.filter(p => p.author.id === profile.id);
+            const isFollowing = state.currentUser.following.includes(profile.id);
+            const isOwnProfile = profile.id === state.currentUser.id;
+
+            return `
+                <div class="max-w-2xl">
+                    <!-- Banner -->
+                    <div style="background: linear-gradient(135deg, #1d9bf0 0%, #1a8cd8 100%); height: 200px;"></div>
+
+                    <!-- Profile Header -->
+                    <div class="flex justify-between items-start p-4 border-b border-gray-200 dark:border-gray-700">
+                        <div>
+                            <img src="${profile.avatar}" alt="avatar" class="w-32 h-32 rounded-full -mt-16 border-4 border-white dark:border-gray-900">
+                            <h1 class="text-3xl font-bold mt-4">${profile.username}</h1>
+                            <p class="text-gray-500">@${profile.email.split('@')[0]}</p>
+                            <p class="mt-2">${profile.bio}</p>
+                        </div>
+                        <div style="margin-top: 60px;">
+                            ${isOwnProfile ?
+                                `<button onclick="showProfileModal()" class="btn-primary">Edit Profile</button>` :
+                                `<button onclick="handleFollowClick('${profile.id}')" class="btn-primary">
+                                    ${isFollowing ? 'Following' : 'Follow'}
+                                </button>`
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="flex gap-8 p-4 border-b border-gray-200 dark:border-gray-700 text-sm">
+                        <div><span class="font-bold">${userPosts.length}</span> Posts</div>
+                        <div><span class="font-bold">${profile.following.length}</span> Following</div>
+                        <div><span class="font-bold">${profile.followers.length}</span> Followers</div>
+                    </div>
+
+                    <!-- User Posts -->
+                    ${userPosts.map(post => PostComponent(post)).join('')}
+                </div>
+            `;
+        }
+
+        function getSettingsView() {
+            return `
+                <div class="max-w-2xl mx-auto">
+                    <!-- Settings Header -->
+                    <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4">
+                        <h2 class="text-xl font-bold">Settings</h2>
+                    </div>
+
+                    <div class="p-6 space-y-6">
+                        <!-- Profile Settings -->
+                        <div class="settings-card p-6">
+                            <h3 class="text-lg font-bold mb-4">Profile Settings</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Display Name</label>
+                                    <input type="text" id="settings-name" value="${state.currentUser.username}" 
+                                           class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Bio</label>
+                                    <textarea id="settings-bio" class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" rows="3" maxlength="160">${state.currentUser.bio || ''}</textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Profile Picture</label>
+                                    <div class="flex items-center gap-4">
+                                        <img src="${state.currentUser.avatar}" alt="avatar" class="w-16 h-16 rounded-full">
+                                        <button onclick="document.getElementById('settings-avatar-upload').click()" class="btn-primary">Change Picture</button>
+                                        <input type="file" id="settings-avatar-upload" class="file-input-hidden" accept="image/*" onchange="handleAvatarUpload(event)">
+                                    </div>
+                                </div>
+                                <button onclick="saveProfileSettings()" class="btn-primary w-full">Save Profile Settings</button>
+                            </div>
+                        </div>
+
+                        <!-- Appearance Settings -->
+                        <div class="settings-card p-6">
+                            <h3 class="text-lg font-bold mb-4">Appearance</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-bold">Dark Mode</div>
+                                        <div class="text-sm text-gray-500">Toggle between light and dark themes</div>
+                                    </div>
+                                    <button onclick="toggleDarkMode()" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${state.darkMode ? 'bg-blue-600' : 'bg-gray-200'}">
+                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${state.darkMode ? 'translate-x-6' : 'translate-x-1'}"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Privacy Settings -->
+                        <div class="settings-card p-6">
+                            <h3 class="text-lg font-bold mb-4">Privacy & Safety</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-bold">Private Account</div>
+                                        <div class="text-sm text-gray-500">Only approved followers can see your posts and stories</div>
+                                    </div>
+                                    <input type="checkbox" id="private-account" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" ${state.currentUser.privateAccount ? 'checked' : ''}>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Settings -->
+                        <div class="settings-card p-6">
+                            <h3 class="text-lg font-bold mb-4 text-red-500">Danger Zone</h3>
+                            <div class="space-y-4">
+                                <button onclick="handleLogout()" class="w-full p-3 border border-red-300 text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900 font-bold">
+                                    Logout
+                                </button>
+                                <button onclick="deleteAccount()" class="w-full p-3 bg-red-500 text-white rounded-lg hover:bg-red-600 font-bold">
+                                    Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getMessagesView() {
+            const conversations = getConversations();
+            const conversationIds = Object.keys(conversations);
+
+            return `
+                <div class="max-w-2xl">
+                    <!-- Messages Header -->
+                    <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4">
+                        <h2 class="text-xl font-bold">Messages</h2>
+                    </div>
+
+                    <!-- Conversations List -->
+                    ${conversationIds.length > 0 ?
+                        conversationIds.map(userId => {
+                            const user = state.users.find(u => u.id === userId);
+                            const lastMsg = conversations[userId][conversations[userId].length - 1];
+                            return `
+                                <div class="border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer" onclick="openDM('${userId}')">
+                                    <div class="flex items-center gap-3">
+                                        <img src="${user.avatar}" alt="avatar" class="w-12 h-12 rounded-full">
+                                        <div class="flex-1">
+                                            <div class="font-bold">${user.username}</div>
+                                            <div class="text-gray-500 text-sm truncate">${lastMsg.content}</div>
+                                        </div>
+                                        <div class="text-gray-500 text-tm">${formatTime(lastMsg.createdAt)}</div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('') :
+                        '<div class="p-8 text-center text-gray-500">No conversations yet</div>'
+                    }
+                </div>
+            `;
+        }
+
+        function getNotificationsView() {
+            const notifications = getNotifications();
+            return `
+                <div class="max-w-2xl">
+                    <!-- Notifications Header -->
+                    <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4">
+                        <h2 class="text-xl font-bold">Notifications</h2>
+                    </div>
+
+                    <!-- Notifications List -->
+                    ${notifications.length > 0 ?
+                        notifications.map(notif => `
+                            <div class="border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <div class="flex items-start gap-3">
+                                    <img src="${notif.actor.avatar}" alt="avatar" class="w-12 h-12 rounded-full flex-shrink-0">
+                                    <div class="flex-1">
+                                        <p><strong>${notif.actor.username}</strong> ${
+                                            notif.type === 'like' ? '❤️ liked your post' :
+                                            notif.type === 'comment' ? '💬 commented on your post' :
+                                            notif.type === 'follow' ? '👤 followed you' :
+                                            notif.type === 'repost' ? '🔄 reposted your post' :
+                                            notif.type === 'message' ? '💌 sent you a message' : 'interacted with you'
+                                        }</p>
+                                        <div class="text-gray-500 text-sm">${formatTime(notif.createdAt)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('') :
+                        '<div class="p-8 text-center text-gray-500">No notifications yet</div>'
+                    }
+                </div>
+            `;
+        }
+
+        function getStoriesView() {
+            const storiesByUsers = getStoriesByUsers();
+            const myStories = getUserStories(state.currentUser.id);
+
+            return `
+                <div class="max-w-2xl">
+                    <!-- Stories Header -->
+                    <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-xl font-bold">Stories</h2>
+                            <button onclick="showStoryModal(true)" class="btn-primary">+ Add Story</button>
+                        </div>
+                    </div>
+
+                    <!-- My Story -->
+                    ${myStories.length > 0 ? `
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="font-bold mb-3">Your Story</h3>
+                            <div class="flex gap-3 overflow-x-auto scrollbar-thin">
+                                ${myStories.map(story => `
+                                    <div class="flex-shrink-0">
+                                        <div class="relative cursor-pointer" onclick="viewStory('${story.id}')">
+                                            <img src="${story.image || story.author.avatar}" alt="story" class="w-16 h-16 rounded-full border-2 border-gray-300 dark:border-gray-600">
+                                            <div class="absolute -bottom-1 -right-1 bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                                                ${story.likes.length}
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-center mt-1">${formatTime(story.createdAt)}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Friends' Stories -->
+                    <div class="p-4">
+                        <h3 class="font-bold mb-3">Friends' Stories</h3>
+                        ${storiesByUsers.length > 0 ? `
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                ${storiesByUsers.map(userStory => `
+                                    <div class="text-center cursor-pointer" onclick="viewUserStories('${userStory.user.id}')">
+                                        <div class="relative mx-auto">
+                                            <img src="${userStory.user.avatar}" alt="avatar" class="w-16 h-16 rounded-full border-2 ${userStory.hasUnviewed ? 'border-blue-500' : 'border-gray-300 dark:border-gray-600'}">
+                                            ${userStory.hasUnviewed ? '<div class="absolute top-0 right-0 w-4 h-4 bg-blue-500 rounded-full border-2 border-white dark:border-gray-900"></div>' : ''}
+                                        </div>
+                                        <p class="text-sm font-bold mt-2">${userStory.user.username}</p>
+                                        <p class="text-xs text-gray-500">${userStory.stories.length} story${userStory.stories.length > 1 ? 'ies' : ''}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<div class="text-center text-gray-500 py-8">No stories from friends yet</div>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        function ComposerComponent() {
+            return `
+                <div class="border-b border-gray-200 dark:border-gray-700 p-4">
+                    <div class="flex gap-4">
+                        <img src="${state.currentUser.avatar}" alt="avatar" class="w-12 h-12 rounded-full flex-shrink-0">
+                        <div class="flex-1">
+                            <textarea 
+                                id="composer-text"
+                                placeholder="What's happening!?" 
+                                class="w-full text-xl bg-transparent outline-none resize-none dark:text-white"
+                                rows="3"
+                                maxlength="280"
+                                onkeyup="updateCharCount()"
+                            ></textarea>
+                            <div id="media-preview"></div>
+                            <div class="flex justify-between items-center mt-4">
+                                <div class="flex gap-2 text-blue-400">
+                                    <button onclick="document.getElementById('image-upload').click()" class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-gray-800" title="Add Photo">
+                                        📷
+                                    </button>
+                                    <button onclick="document.getElementById('video-upload').click()" class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-gray-800" title="Add Video">
+                                        🎥
+                                    </button>
+                                    <button onclick="showPollModal()" class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-gray-800" title="Create Poll">
+                                        📊
+                                    </button>
+                                    <button onclick="startLiveStreamPrompt()" class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-gray-800" title="Go Live">
+                                        🔴
+                                    </button>
+                                    <button onclick="promptSchedulePost(false)" class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-gray-800" title="Schedule Post">
+                                        ⏰
+                                    </button>
+                                    <button class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-gray-800">😊</button>
+                                    <button class="p-2 rounded-full hover:bg-blue-100 dark:hover:bg-gray-800">📍</button>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span id="char-count" class="text-gray-500 text-sm">280</span>
+                                    <button onclick="publishPost()" class="btn-primary">Post</button>
+                                </div>
+                            </div>
+                            <input type="file" id="image-upload" class="file-input-hidden" accept="image/*" onchange="handleMediaUpload(event, 'image')">
+                            <input type="file" id="video-upload" class="file-input-hidden" accept="video/*" onchange="handleMediaUpload(event, 'video')">
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function PostComponent(post) {
+            const isLiked = post.likes.includes(state.currentUser.id);
+            const isReposted = post.reposts.includes(state.currentUser.id);
+            const isBookmarked = post.bookmarks.includes(state.currentUser.id);
+            const isOwnPost = post.author.id === state.currentUser.id;
+
+            return `
+                <div class="post-card p-4 hover:bg-gray-50 dark:hover:bg-gray-800 animation-fadeIn">
+                    <div class="flex gap-3">
+                        <img src="${post.author.avatar}" alt="avatar" class="w-12 h-12 rounded-full flex-shrink-0 cursor-pointer" onclick="viewUserProfile('${post.author.id}')">
+                        <div class="flex-1">
+                            <!-- Header -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-1">
+                                    <strong class="font-bold hover:underline cursor-pointer" onclick="viewUserProfile('${post.author.id}')">${post.author.username}</strong>
+                                    <span class="text-gray-500">@${post.author.email.split('@')[0]}</span>
+                                    <span class="text-gray-500">·</span>
+                                    <span class="text-gray-500 text-sm">${formatTime(post.createdAt)}</span>
+                                    ${post.isScheduled && post.scheduledFor > Date.now() ? `<span class="text-yellow-500 text-xs ml-2">Scheduled: ${formatTime(post.scheduledFor)}</span>` : ''}
+                                </div>
+                                ${isOwnPost ? `
+                                    <div class="flex gap-2">
+                                        <button onclick="editPostModal('${post.id}')" class="text-gray-500 hover:text-blue-500">✏️</button>
+                                        <button onclick="deletePostConfirm('${post.id}')" class="text-gray-500 hover:text-red-500">🗑️</button>
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <!-- Content -->
+                            <div class="mt-2 text-base leading-normal">
+                                ${highlightHashtags(post.content)}
+                            </div>
+
+                            <!-- Media -->
+                            ${post.media ? 
+                                (post.mediaType === 'video' ? 
+                                    `<video src="${post.media}" controls class="image-preview mt-3" preload="metadata"></video>` :
+                                    `<img src="${post.media}" alt="post" class="image-preview mt-3">`
+                                ) : ''
+                            }
+
+                            <!-- Stats -->
+                            <div class="flex gap-4 mt-3 text-gray-500 text-sm border-t border-gray-200 dark:border-gray-700 pt-3">
+                                <span>${formatNumber(post.comments.length)} 💬</span>
+                                <span>${formatNumber(post.reposts.length)} 🔄</span>
+                                <span>${formatNumber(post.bookmarks.length)} 📌</span>
+                                <span>${formatNumber(post.likes.length)} ❤️</span>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex justify-between mt-3 text-gray-500 max-w-md">
+                                <button class="icon-btn flex-1" onclick="showCommentModal('${post.id}')">💬</button>
+                                <button class="icon-btn flex-1" onclick="handleRepostPost('${post.id}')" style="${isReposted ? 'color: #1d9bf0;' : ''}">🔄</button>
+                                <button class="icon-btn flex-1" onclick="handleLikePost('${post.id}')" style="${isLiked ? 'color: #e0245e;' : ''}">
+                                    ${isLiked ? '❤️' : '🤍'}
+                                </button>
+                                <button class="icon-btn flex-1" onclick="handleBookmarkPost('${post.id}')" style="${isBookmarked ? 'color: #1d9bf0;' : ''}">📌</button>
+                                <button class="icon-btn flex-1">📤</button>
+                            </div>
+
+                            <!-- Emoji Reactions -->
+                            <div class="flex gap-2 mt-2">
+                                <button onclick="addReaction('${post.id}', '👍')" class="text-lg hover:scale-125 transition-transform ${post.reactions.some(r => r.userId === state.currentUser.id && r.emoji === '👍') ? 'scale-125' : ''}">👍</button>
+                                <button onclick="addReaction('${post.id}', '❤️')" class="text-lg hover:scale-125 transition-transform ${post.reactions.some(r => r.userId === state.currentUser.id && r.emoji === '❤️') ? 'scale-125' : ''}">❤️</button>
+                                <button onclick="addReaction('${post.id}', '😂')" class="text-lg hover:scale-125 transition-transform ${post.reactions.some(r => r.userId === state.currentUser.id && r.emoji === '😂') ? 'scale-125' : ''}">😂</button>
+                                <button onclick="addReaction('${post.id}', '😮')" class="text-lg hover:scale-125 transition-transform ${post.reactions.some(r => r.userId === state.currentUser.id && r.emoji === '😮') ? 'scale-125' : ''}">😮</button>
+                                <button onclick="addReaction('${post.id}', '😢')" class="text-lg hover:scale-125 transition-transform ${post.reactions.some(r => r.userId === state.currentUser.id && r.emoji === '😢') ? 'scale-125' : ''}">😢</button>
+                                <button onclick="addReaction('${post.id}', '😡')" class="text-lg hover:scale-125 transition-transform ${post.reactions.some(r => r.userId === state.currentUser.id && r.emoji === '😡') ? 'scale-125' : ''}">😡</button>
+                            </div>
+                            ${post.reactions.length > 0 ? `
+                                <div class="mt-2 text-sm text-gray-500">
+                                    ${Object.entries(post.reactions.reduce((acc, r) => {
+                                        acc[r.emoji] = (acc[r.emoji] || 0) + 1;
+                                        return acc;
+                                    }, {})).map(([emoji, count]) => `${emoji} ${count}`).join(' · ')}
+                                </div>
+                            ` : ''}
+
+                            <!-- Poll Display -->
+                            ${post.poll ? `
+                                <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                                    <h4 class="font-bold mb-3">${post.poll.question}</h4>
+                                    <div class="space-y-2">
+                                        ${post.poll.options.map((option, index) => {
+                                            const percentage = post.poll.totalVotes > 0 ? (option.votes.length / post.poll.totalVotes * 100).toFixed(1) : 0;
+                                            const hasVoted = option.votes.some(vote => vote.userId === state.currentUser.id);
+                                            return `
+                                                <div class="relative">
+                                                    <button onclick="votePoll('${post.id}', ${index})" 
+                                                            class="w-full text-left p-2 rounded border ${hasVoted ? 'border-blue-500 bg-blue-50 dark:bg-blue-900' : 'border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'} transition-colors"
+                                                            ${hasVoted ? 'disabled' : ''}>
+                                                        ${option.text}
+                                                    </button>
+                                                    ${post.poll.totalVotes > 0 ? `
+                                                        <div class="absolute top-0 left-0 h-full bg-blue-200 dark:bg-blue-800 rounded" style="width: ${percentage}%"></div>
+                                                        <span class="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm font-bold">${percentage}%</span>
+                                                    ` : ''}
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-2">${post.poll.totalVotes} votes • ${post.poll.expiresAt > Date.now() ? 'Ends ' + formatTime(post.poll.expiresAt) : 'Poll ended'}</p>
+                                </div>
+                            ` : ''}
+
+                            <!-- Live Stream Indicator -->
+                            ${post.isLive ? `
+                                <div class="mt-4 p-3 bg-red-100 dark:bg-red-900 border border-red-300 dark:border-red-700 rounded-lg">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                                        <span class="font-bold text-red-600 dark:text-red-400">LIVE NOW</span>
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">${Math.floor(Math.random() * 1000) + 100} watching</span>
+                                    </div>
+                                    <button onclick="endLiveStream('${post.id}')" class="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">End Stream</button>
+                                </div>
+                            ` : ''}
+
+                            <!-- Comments -->
+                            ${post.comments.length > 0 ? `
+                                <div class="mt-4 space-y-3 border-t border-gray-200 dark:border-gray-700 pt-3">
+                                    ${post.comments.slice(-2).map(comment => `
+                                        <div class="flex gap-2">
+                                            <img src="${comment.author.avatar}" alt="avatar" class="w-8 h-8 rounded-full flex-shrink-0">
+                                            <div class="flex-1 bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">
+                                                <div class="flex items-center gap-1">
+                                                    <strong class="text-sm">${comment.author.username}</strong>
+                                                    <span class="text-gray-500 text-xs">${formatTime(comment.createdAt)}</span>
+                                                    ${comment.author.id === state.currentUser.id ? `
+                                                        <button onclick="handleDeleteComment('${post.id}', '${comment.id}')" class="text-gray-500 hover:text-red-500 text-xs">✕</button>
+                                                    ` : ''}
+                                                </div>
+                                                <p class="text-sm">${highlightHashtags(comment.content)}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                    ${post.comments.length > 2 ? `<div class="text-blue-500 text-sm cursor-pointer font-bold" onclick="showCommentModal('${post.id}')">View all ${post.comments.length} comments</div>` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function PostModal() {
+            return `
+                <div id="post-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <h3 class="text-xl font-bold">Compose Post</h3>
+                            <button onclick="showPostModal(false)" class="text-2xl">✕</button>
+                        </div>
+                        <div class="p-4">
+                            <textarea id="modal-post-text" placeholder="What's on your mind?" class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-lg resize-none" rows="6" maxlength="280"></textarea>
+                            <div id="modal-media-preview"></div>
+                            <div class="flex gap-2 mt-4">
+                                <button onclick="document.getElementById('modal-image-upload').click()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" title="Add Photo">📷</button>
+                                <button onclick="document.getElementById('modal-video-upload').click()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" title="Add Video">🎥</button>
+                                <button onclick="promptSchedulePost(true)" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" title="Schedule Post">⏰</button>
+                                <input type="file" id="modal-image-upload" class="file-input-hidden" accept="image/*" onchange="handleModalMediaUpload(event, 'image')">
+                                <input type="file" id="modal-video-upload" class="file-input-hidden" accept="video/*" onchange="handleModalMediaUpload(event, 'video')">
+                            </div>
+                            <button onclick="publishPostFromModal()" class="btn-primary w-full mt-4">Post</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function ProfileModal() {
+            return `
+                <div id="profile-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <h3 class="text-xl font-bold">Edit Profile</h3>
+                            <button onclick="showProfileModal(false)" class="text-2xl">✕</button>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <div>
+                                <label class="block font-bold mb-2">Display Name</label>
+                                <input type="text" id="profile-name" value="${state.currentUser.username}" 
+                                       class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2">Bio</label>
+                                <textarea id="profile-bio" maxlength="160" class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg resize-none" rows="4">${state.currentUser.bio || ''}</textarea>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2">Profile Picture</label>
+                                <div class="flex items-center gap-4">
+                                    <img src="${state.currentUser.avatar}" alt="avatar" class="w-16 h-16 rounded-full">
+                                    <button onclick="document.getElementById('profile-avatar-upload').click()" class="btn-primary">Change Picture</button>
+                                    <input type="file" id="profile-avatar-upload" class="file-input-hidden" accept="image/*" onchange="handleProfileAvatarUpload(event)">
+                                </div>
+                            </div>
+                            <button onclick="saveProfile()" class="btn-primary w-full">Save Profile</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function DMModal() {
+            if (!state.selectedDMUser) return '';
+            const conversation = getConversation(state.selectedDMUser.id);
+            const recipient = state.users.find(u => u.id === state.selectedDMUser.id);
+
+            return `
+                <div id="dm-modal" class="modal">
+                    <div class="modal-content flex flex-col max-h-96">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <img src="${recipient.avatar}" alt="avatar" class="w-10 h-10 rounded-full">
+                                <div>
+                                    <h3 class="font-bold">${recipient.username}</h3>
+                                    <p class="text-sm text-gray-500">@${recipient.email.split('@')[0]}</p>
+                                </div>
+                            </div>
+                            <button onclick="showDMModal(false)" class="text-2xl">✕</button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto p-4 space-y-3">
+                            ${conversation.map(msg => `
+                                <div class="flex ${msg.senderId === state.currentUser.id ? 'justify-end' : 'justify-start'}">
+                                    <div class="max-w-xs ${msg.senderId === state.currentUser.id ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'} rounded-lg p-3">
+                                        <p>${msg.content}</p>
+                                        <p class="text-xs opacity-70 mt-1">${formatTime(msg.createdAt)}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="border-t border-gray-200 dark:border-gray-700 p-4 flex gap-2">
+                            <input id="dm-input" type="text" placeholder="Send message..." class="flex-1 p-2 bg-gray-100 dark:bg-gray-800 rounded-full focus:outline-none">
+                            <button onclick="sendDM()" class="btn-primary">Send</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function StoryModal() {
+            return `
+                <div id="story-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <h3 class="text-xl font-bold">Create Story</h3>
+                            <button onclick="showStoryModal(false)" class="text-2xl">✕</button>
+                        </div>
+                        <div class="p-4">
+                            <textarea id="story-text" placeholder="What's your story?" class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg text-lg resize-none" rows="4" maxlength="200"></textarea>
+                            <div id="story-media-preview" class="mt-4"></div>
+                            <div class="flex gap-2 mt-4">
+                                <button onclick="document.getElementById('story-image-upload').click()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" title="Add Photo">📷</button>
+                                <button onclick="document.getElementById('story-video-upload').click()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800" title="Add Video">🎥</button>
+                                <input type="file" id="story-image-upload" class="file-input-hidden" accept="image/*" onchange="handleStoryMediaUpload(event, 'photo')">
+                                <input type="file" id="story-video-upload" class="file-input-hidden" accept="video/*" onchange="handleStoryMediaUpload(event, 'video')">
+                            </div>
+                            <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                                <h4 class="font-bold mb-3">Add a Story Poll (optional)</h4>
+                                <input type="text" id="story-poll-question" placeholder="Poll question" class="w-full p-3 bg-gray-100 dark:bg-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3">
+                                <div class="space-y-2">
+                                    <input type="text" class="story-poll-option w-full p-3 bg-gray-100 dark:bg-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Option 1">
+                                    <input type="text" class="story-poll-option w-full p-3 bg-gray-100 dark:bg-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Option 2">
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Leave poll fields empty if you do not want a poll.</p>
+                            </div>
+                            <button onclick="publishStory()" class="btn-primary w-full mt-4">Share Story</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function StoryViewerModal() {
+            if (!state.viewingStory) return '';
+
+            const stories = getUserStories(state.viewingStory.author.id);
+            const currentStory = stories[state.storyIndex];
+            if (!currentStory) return '';
+
+            const progress = ((state.storyIndex + 1) / stories.length) * 100;
+            const isLiked = currentStory.likes.includes(state.currentUser.id);
+            const isOwnStory = currentStory.author.id === state.currentUser.id;
+
+            return `
+                <div id="story-viewer-modal" class="modal" style="background: rgba(0, 0, 0, 0.9);">
+                    <div class="modal-content" style="background: none; box-shadow: none; max-width: 400px;">
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-gray-600 rounded-full h-1 mb-4">
+                            <div class="bg-white h-1 rounded-full transition-all duration-300" style="width: ${progress}%"></div>
+                        </div>
+
+                        <!-- Story Header -->
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-3">
+                                <img src="${currentStory.author.avatar}" alt="avatar" class="w-8 h-8 rounded-full">
+                                <div>
+                                    <p class="text-white font-bold text-sm">${currentStory.author.username}</p>
+                                    <p class="text-gray-300 text-xs">${formatTime(currentStory.createdAt)}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                ${isOwnStory ? `<button onclick="deleteStory('${currentStory.id}'); showStoryViewerModal(false)" class="text-white">🗑️</button>` : ''}
+                                <button onclick="showStoryViewerModal(false)" class="text-white text-xl">✕</button>
+                            </div>
+                        </div>
+
+                        <!-- Story Content -->
+                        <div class="relative">
+                            ${currentStory.media ? 
+                                (currentStory.type === 'video' ? 
+                                    `<video src="${currentStory.media}" controls class="w-full max-h-96 object-cover rounded-lg" autoplay muted></video>` :
+                                    `<img src="${currentStory.media}" alt="story" class="w-full max-h-96 object-cover rounded-lg">`
+                                ) :
+                                `<div class="w-full h-64 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                    <div class="text-center text-white">
+                                        <div class="text-4xl mb-2">📖</div>
+                                        <p class="text-lg font-bold">${currentStory.content}</p>
+                                    </div>
+                                </div>`
+                            }
+                            ${currentStory.content && currentStory.media ? 
+                                `<div class="absolute bottom-4 left-4 right-4 bg-black bg-opacity-50 text-white p-3 rounded-lg">
+                                    <p>${currentStory.content}</p>
+                                </div>` : ''
+                            }
+                        </div>
+
+                        <!-- Reply Section -->
+                        <div class="mt-4 bg-black bg-opacity-30 rounded-lg p-3">
+                            <div class="flex gap-2">
+                                <input type="text" id="story-reply-input" placeholder="Reply to this story..." 
+                                       class="flex-1 bg-white bg-opacity-20 text-white placeholder-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                                       onkeypress="handleStoryReplyKeyPress(event, '${currentStory.id}')">
+                                <button onclick="submitStoryReply('${currentStory.id}')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full hover:bg-opacity-30 transition-all">Reply</button>
+                            </div>
+                            ${currentStory.replies && currentStory.replies.length > 0 ? `
+                                <div class="mt-3 max-h-32 overflow-y-auto">
+                                    ${currentStory.replies.slice(-3).map(reply => `
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <img src="${reply.author.avatar}" alt="avatar" class="w-6 h-6 rounded-full">
+                                            <div class="bg-white bg-opacity-10 rounded-lg px-3 py-1 flex-1">
+                                                <p class="text-white text-sm font-bold">${reply.author.username}</p>
+                                                <p class="text-gray-200 text-sm">${reply.content}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${currentStory.poll ? `
+                            <div class="mt-4 p-4 bg-white bg-opacity-10 rounded-lg border border-white border-opacity-10">
+                                <h4 class="text-white font-bold mb-3">${currentStory.poll.question}</h4>
+                                <div class="space-y-2">
+                                    ${currentStory.poll.options.map((option, index) => {
+                                        const percentage = currentStory.poll.totalVotes > 0 ? (option.votes.length / currentStory.poll.totalVotes * 100).toFixed(0) : 0;
+                                        const hasVoted = option.votes.some(vote => vote.userId === state.currentUser.id);
+                                        return `
+                                            <button onclick="voteStoryPoll('${currentStory.id}', ${index})" class="w-full text-left p-3 rounded-lg border ${hasVoted ? 'border-blue-500 bg-blue-600 bg-opacity-20' : 'border-gray-300 bg-black bg-opacity-20 hover:bg-white hover:bg-opacity-10'} text-white relative">
+                                                <span>${option.text}</span>
+                                                ${currentStory.poll.totalVotes > 0 ? `<span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-white">${percentage}%</span>` : ''}
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                                <p class="text-sm text-gray-300 mt-2">${currentStory.poll.totalVotes} vote${currentStory.poll.totalVotes === 1 ? '' : 's'}</p>
+                            </div>
+                        ` : ''}
+
+                        <!-- Story Actions -->
+                        <div class="flex justify-between items-center mt-4">
+                            <div class="flex items-center gap-4 text-white">
+                                <button onclick="likeStory('${currentStory.id}')" class="${isLiked ? 'text-red-500' : ''}">
+                                    ${isLiked ? '❤️' : '🤍'} ${currentStory.likes.length}
+                                </button>
+                                <span>👁️ ${currentStory.views.length}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="prevStory()" class="text-white text-2xl ${state.storyIndex > 0 ? '' : 'opacity-50'}" ${state.storyIndex > 0 ? '' : 'disabled'}>⬅️</button>
+                                <button onclick="nextStory()" class="text-white text-2xl ${state.storyIndex < stories.length - 1 ? '' : 'opacity-50'}" ${state.storyIndex < stories.length - 1 ? '' : 'disabled'}>➡️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function PollModal() {
+            if (!state.showPollModal) return '';
+
+            return `
+                <div id="poll-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <h3 class="text-xl font-bold">Create Poll</h3>
+                            <button onclick="state.showPollModal = false; render()" class="text-2xl">✕</button>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <div>
+                                <label class="block font-bold mb-2">Question</label>
+                                <input type="text" id="poll-question" placeholder="What's your question?" 
+                                       class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div id="poll-options">
+                                <div class="flex gap-2 mb-2">
+                                    <input type="text" placeholder="Option 1" class="flex-1 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <button onclick="removePollOption(this)" class="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600">✕</button>
+                                </div>
+                                <div class="flex gap-2 mb-2">
+                                    <input type="text" placeholder="Option 2" class="flex-1 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <button onclick="removePollOption(this)" class="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600">✕</button>
+                                </div>
+                            </div>
+                            <button onclick="addPollOption()" class="w-full p-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 text-gray-500 hover:text-blue-500">
+                                + Add Option
+                            </button>
+                            <div>
+                                <label class="block font-bold mb-2">Duration</label>
+                                <select id="poll-duration" class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="1">1 hour</option>
+                                    <option value="6">6 hours</option>
+                                    <option value="12">12 hours</option>
+                                    <option value="24" selected>1 day</option>
+                                    <option value="168">1 week</option>
+                                </select>
+                            </div>
+                            <button onclick="createPollFromModal()" class="btn-primary w-full">Create Poll</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function LiveModal() {
+            if (!state.showLiveModal) return '';
+
+            return `
+                <div id="live-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-red-500">Go Live</h3>
+                            <button onclick="state.showLiveModal = false; render()" class="text-2xl">✕</button>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <div class="text-center">
+                                <div class="w-20 h-20 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-4xl">🔴</span>
+                                </div>
+                                <h4 class="text-lg font-bold mb-2">Ready to go live?</h4>
+                                <p class="text-gray-500 mb-4">Share what's happening right now with your followers</p>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2">Stream Title</label>
+                                <input type="text" id="live-title" placeholder="What's happening?" 
+                                       class="w-full p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="bg-yellow-50 dark:bg-yellow-900 p-4 rounded-lg">
+                                <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                                    <strong>Note:</strong> This is a simulated live stream. In a real app, this would connect to streaming services like RTMP or WebRTC.
+                                </p>
+                            </div>
+                            <button onclick="startLiveFromModal()" class="w-full p-4 bg-red-500 text-white rounded-lg hover:bg-red-600 font-bold text-lg">
+                                🚀 Start Live Stream
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTrendingTopics() {
+            const topics = {};
+            state.posts.forEach(post => {
+                post.hashtags.forEach(tag => {
+                    topics[tag] = (topics[tag] || 0) + 1;
+                });
+            });
+
+            return Object.entries(topics)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([tag, count]) => ({ tag, count }));
+        }
+
+        // ===========================
+        // EVENT HANDLERS
+        // ===========================
+
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                document.getElementById('login-error').textContent = 'Please fill in all fields';
+                return;
+            }
+
+            const result = login(email, password);
+            if (result.success) {
+                render();
+            } else {
+                document.getElementById('login-error').textContent = result.error;
+            }
+        }
+
+        function handleRegister() {
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            if (!username || !email || !password) {
+                document.getElementById('register-error').textContent = 'Please fill in all fields';
+                return;
+            }
+
+            const result = register(username, email, password);
+            if (result.success) {
+                state.currentUser = result.user;
+                localStorage.setItem('currentUser', email);
+                render();
+            } else {
+                document.getElementById('register-error').textContent = result.error;
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                logout();
+                state.currentView = 'home';
+                render();
+            }
+        }
+
+        function saveProfileSettings() {
+            const name = document.getElementById('settings-name').value.trim();
+            const bio = document.getElementById('settings-bio').value.trim();
+            const isPrivate = document.getElementById('private-account').checked;
+
+            if (name) {
+                const otherUser = state.users.find(u => u.username.toLowerCase() === name.toLowerCase() && u.id !== state.currentUser.id);
+                if (otherUser) {
+                    alert('That username is already taken. Please choose another username.');
+                    return;
+                }
+                state.currentUser.username = name;
+            }
+            state.currentUser.bio = bio;
+            state.currentUser.privateAccount = isPrivate;
+            saveState();
+            render();
+            alert('Profile settings saved successfully!');
+        }
+
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    state.currentUser.avatar = e.target.result;
+                    saveState();
+                    render();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                // Remove user from all arrays
+                state.users = state.users.filter(u => u.id !== state.currentUser.id);
+                state.posts = state.posts.filter(p => p.author.id !== state.currentUser.id);
+                state.messages = state.messages.filter(m => m.from !== state.currentUser.id && m.to !== state.currentUser.id);
+                state.stories = state.stories.filter(s => s.author.id !== state.currentUser.id);
+
+                // Update followers/following relationships
+                state.users.forEach(user => {
+                    user.followers = user.followers.filter(id => id !== state.currentUser.id);
+                    user.following = user.following.filter(id => id !== state.currentUser.id);
+                });
+
+                saveState();
+                state.currentUser = null;
+                render();
+            }
+        }
+
+        function publishPost() {
+            const text = document.getElementById('composer-text').value.trim();
+            const mediaData = window.postMediaData;
+            const mediaType = window.postMediaType || null;
+
+            if (!text && !mediaData) return;
+
+            createPost(text, mediaData ? 'media' : 'text', mediaData, mediaType);
+            document.getElementById('composer-text').value = '';
+            document.getElementById('media-preview').innerHTML = '';
+            window.postMediaData = null;
+            window.postMediaType = null;
+            updateCharCount();
+            render();
+        }
+
+        function publishPostFromModal() {
+            const text = document.getElementById('modal-post-text').value.trim();
+            const mediaData = window.modalMediaData;
+            const mediaType = window.modalMediaType || null;
+
+            if (!text && !mediaData) return;
+
+            createPost(text, mediaData ? 'media' : 'text', mediaData, mediaType);
+            document.getElementById('modal-post-text').value = '';
+            document.getElementById('modal-media-preview').innerHTML = '';
+            window.modalMediaData = null;
+            window.modalMediaType = null;
+            showPostModal(false);
+            render();
+        }
+
+        function promptSchedulePost(fromModal = false) {
+            const text = fromModal ? document.getElementById('modal-post-text').value.trim() : document.getElementById('composer-text').value.trim();
+            const mediaData = fromModal ? window.modalMediaData : window.postMediaData;
+            const mediaType = fromModal ? window.modalMediaType : window.postMediaType || null;
+
+            if (!text && !mediaData) {
+                alert('Please add text or media before scheduling a post.');
+                return;
+            }
+
+            const scheduleValue = prompt('Schedule this post for (YYYY-MM-DD HH:MM)');
+            if (!scheduleValue) return;
+
+            const scheduledAt = new Date(scheduleValue.replace(' ', 'T')).getTime();
+            if (isNaN(scheduledAt) || scheduledAt <= Date.now()) {
+                alert('Please enter a future date and time in the format YYYY-MM-DD HH:MM');
+                return;
+            }
+
+            schedulePost(text, mediaData, mediaType, scheduledAt);
+
+            if (fromModal) {
+                document.getElementById('modal-post-text').value = '';
+                document.getElementById('modal-media-preview').innerHTML = '';
+                window.modalMediaData = null;
+                window.modalMediaType = null;
+                showPostModal(false);
+            } else {
+                document.getElementById('composer-text').value = '';
+                document.getElementById('media-preview').innerHTML = '';
+                window.postMediaData = null;
+                window.postMediaType = null;
+                updateCharCount();
+            }
+
+            render();
+            alert('Your post has been scheduled!');
+        }
+
+        function handleLikePost(postId) {
+            likePost(postId);
+            render();
+        }
+
+        function handleRepostPost(postId) {
+            repostPost(postId);
+            render();
+        }
+
+        function handleBookmarkPost(postId) {
+            bookmarkPost(postId);
+            render();
+        }
+
+        function deletePostConfirm(postId) {
+            if (confirm('Delete this post?')) {
+                deletePost(postId);
+                render();
+            }
+        }
+
+        function editPostModal(postId) {
+            const post = state.posts.find(p => p.id === postId);
+            if (!post) return;
+            const newContent = prompt('Edit post:', post.content);
+            if (newContent && newContent.trim()) {
+                editPost(postId, newContent);
+                render();
+            }
+        }
+
+        function showCommentModal(postId) {
+            const comment = prompt('Add a comment:');
+            if (comment && comment.trim()) {
+                addComment(postId, comment);
+                render();
+            }
+        }
+
+        function handleDeleteComment(postId, commentId) {
+            if (confirm('Delete this comment?')) {
+                deleteComment(postId, commentId);
+                render();
+            }
+        }
+
+        function setFilter(filter) {
+            state.filter = filter;
+            state.selectedHashtag = null;
+            render();
+        }
+
+        function setHashtag(hashtag) {
+            state.selectedHashtag = state.selectedHashtag === hashtag ? null : hashtag;
+            state.filter = 'all';
+            render();
+        }
+
+        function setView(view) {
+            state.currentView = view;
+            state.selectedProfile = null;
+            render();
+        }
+
+        function viewUserProfile(userId) {
+            if (userId === state.currentUser.id) {
+                state.currentView = 'profile';
+                state.selectedProfile = null;
+            } else {
+                state.currentView = 'profile';
+                state.selectedProfile = userId;
+            }
+            render();
+        }
+
+        function handleFollowClick(userId) {
+            followUser(userId);
+            render();
+        }
+
+        function toggleDarkMode() {
+            state.darkMode = !state.darkMode;
+            localStorage.setItem('darkMode', state.darkMode);
+            applyDarkMode();
+            saveState();
+        }
+
+        function showLoginForm() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+        }
+
+        function showRegisterForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        }
+
+        function showPostModal(show) {
+            const modal = document.getElementById('post-modal');
+            if (show) {
+                modal.classList.add('show');
+            } else {
+                modal.classList.remove('show');
+            }
+        }
+
+        function showProfileModal(show = true) {
+            const modal = document.getElementById('profile-modal');
+            if (show) {
+                modal.classList.add('show');
+            } else {
+                modal.classList.remove('show');
+            }
+        }
+
+        function showDMModal(show) {
+            if (!show) {
+                state.selectedDMUser = null;
+            }
+            render();
+        }
+
+        function openDM(userId) {
+            state.selectedDMUser = state.users.find(u => u.id === userId);
+            render();
+        }
+
+        function sendDM() {
+            const input = document.getElementById('dm-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            sendMessage(state.selectedDMUser.id, text);
+            input.value = '';
+            render();
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('profile-name').value.trim();
+            const bio = document.getElementById('profile-bio').value;
+
+            if (name) {
+                state.currentUser.username = name;
+            }
+            state.currentUser.bio = bio;
+            saveState();
+            showProfileModal(false);
+            render();
+        }
+
+        function handleProfileAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    state.currentUser.avatar = e.target.result;
+                    saveState();
+                    render();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleMediaUpload(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('media-preview');
+                    if (type === 'video') {
+                        preview.innerHTML = `<video src="${e.target.result}" controls class="image-preview"></video>`;
+                    } else {
+                        preview.innerHTML = `<img src="${e.target.result}" class="image-preview">`;
+                    }
+                    // Store the media data and type for publishing
+                    window.postMediaData = e.target.result;
+                    window.postMediaType = type;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleModalMediaUpload(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('modal-media-preview');
+                    if (type === 'video') {
+                        preview.innerHTML = `<video src="${e.target.result}" controls class="image-preview"></video>`;
+                    } else {
+                        preview.innerHTML = `<img src="${e.target.result}" class="image-preview">`;
+                    }
+                    // Store the media data and type for publishing
+                    window.modalMediaData = e.target.result;
+                    window.modalMediaType = type;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleSearch(query) {
+            search(query);
+            const resultsDiv = document.getElementById('search-results');
+            if (resultsDiv) {
+                resultsDiv.style.display = state.searchResults.length > 0 ? 'block' : 'none';
+            }
+            render();
+        }
+
+        function showStoryModal(show) {
+            const modal = document.getElementById('story-modal');
+            if (show) {
+                modal.classList.add('show');
+            } else {
+                modal.classList.remove('show');
+            }
+        }
+
+        function showStoryViewerModal(show) {
+            if (!show) {
+                state.viewingStory = null;
+                state.storyIndex = 0;
+            }
+            render();
+        }
+
+        function showPollModal() {
+            state.showPollModal = true;
+            render();
+        }
+
+        function showLiveModal() {
+            state.showLiveModal = true;
+            render();
+        }
+
+        function startLiveStreamPrompt() {
+            const title = prompt('Enter your live stream title:');
+            if (title && title.trim()) {
+                startLiveStream(title.trim());
+                render();
+            }
+        }
+
+        function addPollOption() {
+            const optionsContainer = document.getElementById('poll-options');
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'flex gap-2 mb-2';
+            optionDiv.innerHTML = `
+                <input type="text" placeholder="Option ${optionsContainer.children.length + 1}" class="flex-1 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="removePollOption(this)" class="p-3 bg-red-500 text-white rounded-lg hover:bg-red-600">✕</button>
+            `;
+            optionsContainer.appendChild(optionDiv);
+        }
+
+        function removePollOption(button) {
+            const optionDiv = button.parentElement;
+            if (document.querySelectorAll('#poll-options > div').length > 2) {
+                optionDiv.remove();
+            }
+        }
+
+        function createPollFromModal() {
+            const question = document.getElementById('poll-question').value.trim();
+            const duration = parseInt(document.getElementById('poll-duration').value);
+            const optionInputs = document.querySelectorAll('#poll-options input');
+            const options = Array.from(optionInputs).map(input => input.value.trim()).filter(option => option);
+
+            if (!question || options.length < 2) {
+                alert('Please enter a question and at least 2 options');
+                return;
+            }
+
+            const poll = createPoll(question, options, duration);
+            const post = createPost(question, 'poll', null, null);
+            post.poll = poll;
+
+            state.showPollModal = false;
+            render();
+        }
+
+        function startLiveFromModal() {
+            const title = document.getElementById('live-title').value.trim();
+            if (!title) {
+                alert('Please enter a stream title');
+                return;
+            }
+
+            startLiveStream(title);
+            state.showLiveModal = false;
+            render();
+        }
+
+        function publishStory() {
+            const text = document.getElementById('story-text').value.trim();
+            const mediaData = window.storyMediaData;
+            const mediaType = window.storyMediaType || 'text';
+            const pollQuestion = document.getElementById('story-poll-question').value.trim();
+            const pollOptions = Array.from(document.querySelectorAll('.story-poll-option'))
+                .map(input => input.value.trim())
+                .filter(option => option);
+
+            if (!text && !mediaData && !pollQuestion) return;
+
+            const poll = pollQuestion && pollOptions.length >= 2 ? createPoll(pollQuestion, pollOptions, 24) : null;
+            createStory(text, mediaData, mediaType, poll);
+            document.getElementById('story-text').value = '';
+            document.getElementById('story-poll-question').value = '';
+            document.querySelectorAll('.story-poll-option').forEach(input => input.value = '');
+            document.getElementById('story-media-preview').innerHTML = '';
+            window.storyMediaData = null;
+            window.storyMediaType = null;
+            showStoryModal(false);
+            render();
+        }
+
+        function viewStory(storyId) {
+            const story = state.stories.find(s => s.id === storyId);
+            if (story) {
+                state.viewingStory = story;
+                state.storyIndex = getUserStories(story.author.id).findIndex(s => s.id === storyId);
+                if (!story.views.includes(state.currentUser.id)) {
+                    story.views.push(state.currentUser.id);
+                    saveState();
+                }
+                render();
+            }
+        }
+
+        function viewUserStories(userId) {
+            const userStories = getUserStories(userId);
+            if (userStories.length > 0) {
+                state.viewingStory = userStories[0];
+                state.storyIndex = 0;
+                if (!userStories[0].views.includes(state.currentUser.id)) {
+                    userStories[0].views.push(state.currentUser.id);
+                    saveState();
+                }
+                render();
+            }
+        }
+
+        function prevStory() {
+            if (state.storyIndex > 0) {
+                state.storyIndex--;
+                const userStories = getUserStories(state.viewingStory.author.id);
+                state.viewingStory = userStories[state.storyIndex];
+                viewStory(state.viewingStory.id);
+                render();
+            }
+        }
+
+        function nextStory() {
+            const userStories = getUserStories(state.viewingStory.author.id);
+            if (state.storyIndex < userStories.length - 1) {
+                state.storyIndex++;
+                state.viewingStory = userStories[state.storyIndex];
+                viewStory(state.viewingStory.id);
+                render();
+            } else {
+                showStoryViewerModal(false);
+            }
+        }
+
+        function handleStoryMediaUpload(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('story-media-preview');
+                    if (type === 'video') {
+                        preview.innerHTML = `<video src="${e.target.result}" controls class="image-preview"></video>`;
+                    } else {
+                        preview.innerHTML = `<img src="${e.target.result}" class="image-preview">`;
+                    }
+                    // Store the media data and type for publishing
+                    window.storyMediaData = e.target.result;
+                    window.storyMediaType = type;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleStoryReplyKeyPress(event, storyId) {
+            if (event.key === 'Enter') {
+                submitStoryReply(storyId);
+            }
+        }
+
+        function submitStoryReply(storyId) {
+            const input = document.getElementById('story-reply-input');
+            const replyText = input.value.trim();
+            if (replyText) {
+                replyStory(storyId, replyText);
+                input.value = '';
+                // Refresh the story viewer to show the new reply
+                render();
+            }
+        }
+
+        function updateCharCount() {
+            const textarea = document.getElementById('composer-text');
+            if (textarea) {
+                const count = 280 - textarea.value.length;
+                const counter = document.getElementById('char-count');
+                if (counter) {
+                    counter.textContent = count;
+                    counter.style.color = count < 0 ? '#e0245e' : count < 20 ? '#ffa500' : '#657786';
+                }
+            }
+        }
+
+        function applyDarkMode() {
+            if (state.darkMode) {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+            }
+        }
+
+        // ===========================
+        // RENDER
+        // ===========================
+
+        function render() {
+            const app = document.getElementById('app');
+            if (state.currentUser) {
+                app.innerHTML = MainApp();
+                setTimeout(() => {
+                    const textarea = document.getElementById('composer-text');
+                    if (textarea) {
+                        textarea.addEventListener('input', updateCharCount);
+                    }
+                }, 0);
+            } else {
+                app.innerHTML = LoginScreen();
+            }
+        }
+
+        // ===========================
+        // INITIALIZATION
+        // ===========================
+
+        loadState();
+
+        if (state.users.length === 0) {
+            register('Demo User', 'demo@example.com', 'password123');
+            register('John Developer', 'john@example.com', 'password123');
+            register('Jane Designer', 'jane@example.com', 'password123');
+
+            // Add bio to users
+            state.users[0].bio = 'Full-stack developer passionate about creating amazing web experiences! 🚀';
+            state.users[1].bio = 'Coffee-fueled coder on a mission to build the next big thing ☕💻';
+            state.users[2].bio = 'Creative designer turning ideas into beautiful digital experiences 🎨✨';
+
+            state.currentUser = state.users[0];
+            createPost('🚀 Welcome to SocialFusion Premium Edition! Now with DMs, comments, profiles & more!', 'text');
+            createPost('#React is awesome! Just built this amazing app 💪 #WebDevelopment #JavaScript', 'text');
+            
+            state.currentUser = state.users[1];
+            createPost('Day 1 of my coding journey! #100DaysOfCode #Programming', 'text');
+            createPost('Just launched my new design portfolio! Check it out 🎨 #Design #UI', 'text');
+            
+            state.currentUser = state.users[2];
+            createPost('Learning Node.js today! Excited! #Backend #Coding', 'text');
+
+            // Create sample stories
+            state.currentUser = state.users[0];
+            createStory('Good morning! ☀️ Starting my day with some coding', null, 'text');
+            createStory('Working on an amazing new feature! 🚀', null, 'text');
+            
+            state.currentUser = state.users[1];
+            createStory('Coffee and code ☕💻', null, 'text');
+            createStory('Beautiful sunset from my window 🌅', 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop', 'photo');
+            
+            state.currentUser = state.users[2];
+            createStory('Design inspiration everywhere! 🎨', null, 'text');
+
+            // Follow relationships
+            state.users[0].following = [state.users[1].id, state.users[2].id];
+            state.users[1].followers.push(state.users[0].id);
+            state.users[2].followers.push(state.users[0].id);
+
+            state.currentUser = null;
+            saveState();
+        }
+
+        applyDarkMode();
+        render();
+    </script>
+</body>
+</html>
